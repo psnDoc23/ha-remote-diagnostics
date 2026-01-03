@@ -1,5 +1,12 @@
 print("PHA Diagnostics server.py is running")
-import time
+from fastapi import FastAPI
 
-while True:
-    time.sleep(60)
+app = FastAPI()
+
+@app.get("/health")
+def health():
+    return {"status": "ok"}
+
+@app.get("/info")
+def info():
+    return {"message": "PHA Diagnostics API is running"}
