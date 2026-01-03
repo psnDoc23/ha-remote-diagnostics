@@ -1,4 +1,4 @@
-ARG BUILD_FROM=ghcr.io/hassio-addons/base-python:3.11
+ARG BUILD_FROM=ghcr.io/home-assistant/amd64-base-python:3.11
 FROM ${BUILD_FROM}
 
 # Copy rootfs into the container
