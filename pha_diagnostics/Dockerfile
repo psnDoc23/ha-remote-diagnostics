@@ -1,13 +1,11 @@
-FROM python:3.11-slim
+ARG BUILD_FROM=ghcr.io/hassio-addons/base-python:3.11
+FROM ${BUILD_FROM}
 
-# Create the directory where our script will live
-RUN mkdir -p /usr/local/bin
+# Copy rootfs into the container
+COPY rootfs/ /
 
-# Copy the run script into the container
+# Copy run script
 COPY run.sh /run.sh
 RUN chmod +x /run.sh
 
-# Copy the placeholder server file
-COPY rootfs/usr/local/bin/server.py /usr/local/bin/server.py
-
-CMD ["/run.sh"]
+CMD [ "/run.sh" ]
