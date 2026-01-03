@@ -1,0 +1,10 @@
+name: PHA Diagnostics API
+version: "0.1.0"
+slug: pha_diagnostics
+description: "Test add-on detection"
+arch:
+  - aarch64
+  - amd64
+  - armv7
+startup: services
+boot: auto
