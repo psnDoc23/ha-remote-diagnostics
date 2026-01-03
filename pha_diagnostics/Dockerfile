@@ -1,7 +1,12 @@
 ARG BUILD_FROM=ghcr.io/home-assistant/amd64-base:latest
 FROM ${BUILD_FROM}
 
-RUN apk add --no-cache python3 py3-pip
+RUN apk add --no-cache python3 py3-pip \
+    build-base \
+    python3-dev \
+    libffi-dev \
+    openssl-dev
+    
 RUN pip install fastapi uvicorn
 
 # Copy rootfs into the container
