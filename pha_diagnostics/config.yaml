@@ -9,6 +9,4 @@ arch:
 startup: services
 boot: auto
 init: false
-
-
-
+legacy: false
