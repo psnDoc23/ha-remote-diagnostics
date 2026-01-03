@@ -8,4 +8,7 @@ arch:
   - armv7
 startup: services
 boot: auto
+init: false
+
+
 
