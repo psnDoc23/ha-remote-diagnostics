@@ -6,8 +6,10 @@ arch:
   - aarch64
   - amd64
   - armv7
-startup: services
+
+startup: application
 boot: auto
+
 init: false
 legacy: false
 ingress: false
