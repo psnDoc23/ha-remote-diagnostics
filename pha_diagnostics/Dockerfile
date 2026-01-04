@@ -10,11 +10,11 @@ RUN apk add --no-cache \
     libffi-dev \
     openssl-dev
 
-# Create a virtual environment for Python packages
+# Create a virtual environment
 RUN python3 -m venv /venv
 ENV PATH="/venv/bin:$PATH"
 
-# Install Python packages inside the venv
+# Install FastAPI + Uvicorn inside the venv
 RUN pip install --no-cache-dir fastapi uvicorn
 
 # Copy rootfs
