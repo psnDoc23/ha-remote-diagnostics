@@ -1,4 +1,3 @@
-print("PHA Diagnostics server.py is running")
 from fastapi import FastAPI
 
 app = FastAPI()
