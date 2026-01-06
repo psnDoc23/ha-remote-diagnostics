@@ -12,7 +12,7 @@ boot: auto
 
 init: false
 legacy: false
-ingress: false
-
-ports:
-  8000/tcp: 8000
+ingress: true
+ingress_port: 8099
+panel_icon: mdi:tools
+panel_title: "Diagnostics"
