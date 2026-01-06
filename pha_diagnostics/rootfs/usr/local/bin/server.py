@@ -7,10 +7,11 @@ from fastapi.responses import HTMLResponse
 def root():
     return """
     <html>
-        <body style="color: white; background: transparent;">
+        <body style="color: var(--primary-text-color); background: var(--card-background-color); padding: 1rem;">
             <h1>PHA Diagnostics API is running</h1>
         </body>
     </html>
+    """
     """
     
 @app.get("/health")
