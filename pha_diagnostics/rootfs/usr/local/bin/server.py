@@ -8,7 +8,7 @@ def root():
     return """
     <html>
         <body style="color: var(--primary-text-color); background: var(--card-background-color); padding: 1rem;">
-            <h1>PHA Diagnostics API is absolutely crushing right now...</h1>
+            <h1>PHA Diagnostics API is running</h1>
         </body>
     </html>
     """
@@ -16,4 +16,4 @@ def root():
     
 @app.get("/health")
 def health():
-    return {"status": "ok"}
+    return {"status": "ok"
