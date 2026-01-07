@@ -7,8 +7,9 @@ from fastapi.responses import HTMLResponse
 def root():
     return """
     <html>
-        <body style="color: red; background: transparent;">
-            <h1>PHA Diagnostics API is running</h1>
+        <body style="color: green; background: transparent;">
+            <h1>PHA Resolve API is running</h1>
+            <p>blah, blah, blah...</p>
         </body>
     </html>
     """
