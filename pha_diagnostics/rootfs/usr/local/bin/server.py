@@ -1,8 +1,3 @@
-from fastapi import FastAPI
-from fastapi.responses import HTMLResponse
-
-app = FastAPI()
-
 @app.get("/", response_class=HTMLResponse)
 def root():
     return """
@@ -10,60 +5,68 @@ def root():
     <head>
         <title>PHA Resolve</title>
         <style>
+            /* Force visibility regardless of HA theme */
             body {
                 font-family: Arial, sans-serif;
                 padding: 1.5rem;
-                color: var(--primary-text-color);
-                background: var(--card-background-color);
+                background: #f5f5f5 !important;   /* Light background */
+                color: #222 !important;           /* Dark text */
             }
+
             .container {
                 max-width: 700px;
                 margin: auto;
                 padding: 1.5rem;
                 border-radius: 12px;
-                background: var(--ha-card-background, rgba(255,255,255,0.05));
-                box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+                background: #ffffff !important;   /* White card */
+                color: #222 !important;           /* Dark text */
+                border: 1px solid #ccc;
+                box-shadow: 0 2px 8px rgba(0,0,0,0.15);
             }
-            h1 {
+
+            h1, h2 {
+                color: #1a4d8f !important;        /* Accent color */
                 margin-top: 0;
-                font-size: 1.8rem;
-                color: var(--primary-color);
             }
-            .section {
-                margin-top: 1.5rem;
-            }
+
             label {
                 font-weight: bold;
                 display: block;
                 margin-bottom: 0.5rem;
             }
+
             textarea {
                 width: 100%;
                 height: 120px;
                 padding: 0.75rem;
                 border-radius: 8px;
-                border: 1px solid var(--divider-color);
-                background: var(--input-background-color, rgba(0,0,0,0.1));
-                color: var(--primary-text-color);
+                border: 1px solid #aaa;
+                background: #fff !important;
+                color: #222 !important;
             }
+
             .button {
                 margin-top: 1rem;
                 padding: 0.75rem 1.25rem;
-                background: var(--primary-color);
-                color: white;
+                background: #1a73e8;
+                color: white !important;
                 border: none;
                 border-radius: 8px;
                 cursor: pointer;
                 font-size: 1rem;
             }
+
             .button:hover {
-                opacity: 0.9;
+                background: #155fc0;
             }
+
             .consent-box {
                 padding: 1rem;
-                background: rgba(0,0,0,0.1);
+                background: #eef3ff !important;
                 border-radius: 8px;
+                border: 1px solid #ccd8ff;
                 margin-top: 0.5rem;
+                color: #222 !important;
             }
         </style>
     </head>
