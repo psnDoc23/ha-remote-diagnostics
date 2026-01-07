@@ -1,4 +1,4 @@
-name: PHA Diagnostics API
+name: PHA Resolve Diagnostic API
 version: "0.1.0"
 slug: pha_diagnostics
 description: "Test add-on detection"
