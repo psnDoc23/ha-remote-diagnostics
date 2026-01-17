@@ -16,3 +16,7 @@ ingress: true
 ingress_port: 8099
 panel_icon: mdi:tools
 panel_title: "Diagnostics"
+
+map:
+  - supervisor_token:rw
+  
