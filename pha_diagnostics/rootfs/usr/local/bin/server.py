@@ -1,3 +1,5 @@
+print("PHA Guardian server.py loaded successfully - 20260117221pm")
+
 from fastapi import FastAPI
 import httpx
 import json
