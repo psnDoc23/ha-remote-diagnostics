@@ -8,7 +8,7 @@ def root():
     return """
     <html>
     <head>
-        <title>PHA Resolve</title>
+        <title>PHA Guardian</title>
         <style>
             body {
                 font-family: Arial, sans-serif;
@@ -65,14 +65,14 @@ def root():
 
     <body>
         <div class="container">
-            <h1>PHA Resolve</h1>
+            <h1>PHA Guardian</h1>
             <p>Your Home Assistant diagnostics companion.</p>
 
             <h2>Access & Permissions</h2>
             <div class="consent-box">
                 <label>
                     <input type="checkbox" id="consent">
-                    I allow PHA Resolve to read my Home Assistant logs and configuration.
+                    I allow PHA Guardian to read my Home Assistant logs and configuration.
                 </label>
             </div>
 
