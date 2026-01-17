@@ -11,8 +11,12 @@ app = FastAPI()
 ISSUES_PATH = Path("/data/issues.json")
 
 # Load issues at startup
-with ISSUES_PATH.open() as f:
-    ISSUES = json.load(f)["issues"]
+if ISSUES_PATH.exists():
+    with ISSUES_PATH.open() as f:
+        ISSUES = json.load(f)["issues"]
+else:
+    print("WARNING: /data/issues.json not found")
+    ISSUES = []
 
 
 async def fetch_supervisor_logs():
