@@ -1,0 +1,56 @@
+{
+  "issues": [
+    {
+      "id": "invalid_yaml",
+      "name": "Invalid YAML in Configuration",
+      "category": "configuration",
+
+      "log_signatures": [
+        {
+          "pattern": "Invalid config for",
+          "severity": "error",
+          "source": "home-assistant.log"
+        },
+        {
+          "pattern": "expected dict for dictionary value",
+          "severity": "error",
+          "source": "home-assistant.log"
+        }
+      ],
+
+      "rules": [
+        {
+          "match_type": "contains",
+          "pattern": "Invalid config for",
+          "source": "home-assistant.log",
+          "base_confidence": 0.6,
+          "confidence_boosts": [
+            {
+              "condition": "pattern: 'expected dict'",
+              "boost": 0.2
+            },
+            {
+              "condition": "pattern: 'line'",
+              "boost": 0.1
+            }
+          ]
+        },
+        {
+          "match_type": "regex",
+          "pattern": "expected dict for dictionary value.*data\\['.*'\\]",
+          "source": "home-assistant.log",
+          "base_confidence": 0.7,
+          "confidence_boosts": []
+        }
+      ],
+
+      "root_cause": "Misaligned indentation, stray tab, wrong key name, or incorrect list structure.",
+      "resolution": "Identify the file and line number from the log, correct the YAML indentation or structure, and validate the configuration.",
+      "confidence": 0.9,
+
+      "references": [
+        "https://www.home-assistant.io/docs/configuration/troubleshooting/"
+      ]
+    }
+  ]
+}
