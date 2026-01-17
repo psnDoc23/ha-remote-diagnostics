@@ -1,103 +1,88 @@
 from fastapi import FastAPI
-from fastapi.responses import HTMLResponse
+import httpx
+import json
+from pathlib import Path
+import re
 
 app = FastAPI()
 
-@app.get("/", response_class=HTMLResponse)
-def root():
-    return """
-    <html>
-    <head>
-        <title>PHA Guardian</title>
-        <style>
-            body {
-                font-family: Arial, sans-serif;
-                padding: 1.5rem;
-                background: #f5f5f5 !important;
-                color: #222 !important;
-            }
-            .container {
-                max-width: 700px;
-                margin: auto;
-                padding: 1.5rem;
-                border-radius: 12px;
-                background: #ffffff !important;
-                color: #222 !important;
-                border: 1px solid #ccc;
-                box-shadow: 0 2px 8px rgba(0,0,0,0.15);
-            }
-            h1, h2 {
-                color: #1a4d8f !important;
-                margin-top: 0;
-            }
-            textarea {
-                width: 100%;
-                height: 120px;
-                padding: 0.75rem;
-                border-radius: 8px;
-                border: 1px solid #aaa;
-                background: #fff !important;
-                color: #222 !important;
-            }
-            .button {
-                margin-top: 1rem;
-                padding: 0.75rem 1.25rem;
-                background: #1a73e8;
-                color: white !important;
-                border: none;
-                border-radius: 8px;
-                cursor: pointer;
-                font-size: 1rem;
-            }
-            .button:hover {
-                background: #155fc0;
-            }
-            .consent-box {
-                padding: 1rem;
-                background: #eef3ff !important;
-                border-radius: 8px;
-                border: 1px solid #ccd8ff;
-                margin-top: 0.5rem;
-                color: #222 !important;
-            }
-        </style>
-    </head>
+ISSUES_PATH = Path("/data/issues.json")
 
-    <body>
-        <div class="container">
-            <h1>PHA Guardian</h1>
-            <p>Your Home Assistant diagnostics companion.</p>
+# Load issues at startup
+with ISSUES_PATH.open() as f:
+    ISSUES = json.load(f)["issues"]
 
-            <h2>Access & Permissions</h2>
-            <div class="consent-box">
-                <label>
-                    <input type="checkbox" id="consent">
-                    I allow PHA Guardian to read my Home Assistant logs and configuration.
-                </label>
-            </div>
 
-            <h2>Describe the Issue</h2>
-            <textarea id="issue" placeholder="Example: Automations stopped running after the last update..."></textarea>
-
-            <button class="button" onclick="submitDiagnostics()">Submit</button>
-
-            <div id="result" style="margin-top: 1rem;"></div>
-        </div>
-
-        <script>
-            function submitDiagnostics() {
-                const consent = document.getElementById('consent').checked;
-                const issue = document.getElementById('issue').value;
-
-                document.getElementById('result').innerHTML = `
-                    <p><strong>Consent:</strong> ${consent ? "Granted" : "Not granted"}</p>
-                    <p><strong>Issue Description:</strong> ${issue || "No description provided"}</p>
-                `;
-            }
-        </script>
-    </body>
-    </html>
+async def fetch_supervisor_logs():
     """
+    Fetch Home Assistant Core logs from Supervisor API.
+    The Supervisor injects the token into the container as an env var.
+    """
+    headers = {
+        "Authorization": f"Bearer {Path('/data/supervisor_token').read_text().strip()}",
+        "Content-Type": "application/json",
+    }
+
+    async with httpx.AsyncClient() as client:
+        resp = await client.get("http://supervisor/logs", headers=headers)
+        resp.raise_for_status()
+        return resp.text
+
+
+def apply_rules_to_logs(issue, logs):
+    """
+    Apply all rules for a single issue to the log text.
+    Returns (confidence, matches)
+    """
+    total_confidence = 0.0
+    matches = []
+
+    for rule in issue.get("rules", []):
+        pattern = rule["pattern"]
+        match_type = rule["match_type"]
+        base_conf = rule.get("base_confidence", 0.0)
+
+        # Match logic
+        if match_type == "contains":
+            if pattern.lower() in logs.lower():
+                matches.append(pattern)
+                total_confidence += base_conf
+
+                # Apply confidence boosts
+                for boost in rule.get("confidence_boosts", []):
+                    cond = boost["condition"].replace("pattern: ", "").strip("'")
+                    if cond.lower() in logs.lower():
+                        total_confidence += boost["boost"]
+
+        elif match_type == "regex":
+            if re.search(pattern, logs, re.IGNORECASE):
+                matches.append(pattern)
+                total_confidence += base_conf
+
+    return total_confidence, matches
+
+
+@app.get("/diagnostics/run")
+async def run_diagnostics():
+    logs = await fetch_supervisor_logs()
+
+    results = []
+
+    for issue in ISSUES:
+        confidence, matches = apply_rules_to_logs(issue, logs)
+
+        if confidence > 0:
+            results.append({
+                "id": issue["id"],
+                "name": issue["name"],
+                "confidence": round(confidence, 3),
+                "matches": matches,
+                "resolution": issue["resolution"],
+                "root_cause": issue["root_cause"]
+            })
+
+    return {"issues_detected": results}
+
 
 @app.get("/health")
 def health():
