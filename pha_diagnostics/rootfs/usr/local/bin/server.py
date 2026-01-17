@@ -67,6 +67,28 @@ def apply_rules_to_logs(issue, logs):
 
     return total_confidence, matches
 
+@app.get("/")
+def root():
+    # Check issues.json availability
+    issues_file_exists = ISSUES_PATH.exists()
+    issues_count = len(ISSUES) if issues_file_exists else 0
+
+    # Check supervisor token availability
+    token_path = Path("/data/supervisor_token")
+    token_available = token_path.exists()
+
+    return {
+        "status": "running",
+        "message": "PHA Guardian API is online",
+        "issues_json_found": issues_file_exists,
+        "issues_loaded": issues_count,
+        "supervisor_token_available": token_available,
+        "endpoints": {
+            "health": "/health",
+            "run_diagnostics": "/diagnostics/run"
+        }
+    }
+
 
 @app.get("/diagnostics/run")
 async def run_diagnostics():
