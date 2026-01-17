@@ -15,7 +15,13 @@ RUN python3 -m venv /venv
 ENV PATH="/venv/bin:$PATH"
 
 # Install FastAPI + Uvicorn inside the venv
-RUN pip install --no-cache-dir fastapi uvicorn
+# RUN pip install --no-cache-dir fastapi uvicorn
+# per cop 20260117
+RUN /venv/bin/pip install \
+    fastapi \
+    uvicorn \
+    httpx
+
 
 # Copy rootfs
 COPY rootfs/ /
