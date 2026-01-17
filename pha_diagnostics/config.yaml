@@ -12,11 +12,15 @@ boot: auto
 
 init: false
 legacy: false
+
 ingress: true
-ingress_port: 8099
+ingress_port: 8000
+
 panel_icon: mdi:tools
 panel_title: "Diagnostics"
 
 map:
   - supervisor_token:rw
-  
+
+options: {}
+schema: {}
