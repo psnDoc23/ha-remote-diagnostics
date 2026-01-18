@@ -1,5 +1,6 @@
-print("PHA Guardian server.py loaded successfully - 20260117221pm")
+print("PHA Guardian loaded successfully")
 
+from fastapi.responses import HTMLResponse
 from fastapi import FastAPI
 import httpx
 import json
@@ -67,27 +68,75 @@ def apply_rules_to_logs(issue, logs):
 
     return total_confidence, matches
 
-@app.get("/")
+
+@app.get("/", response_class=HTMLResponse)
 def root():
-    # Check issues.json availability
-    issues_file_exists = ISSUES_PATH.exists()
-    issues_count = len(ISSUES) if issues_file_exists else 0
+    return """
+    <html>
+        <head>
+            <title>PHA Guardian Diagnostics</title>
+            <style>
+                body {
+                    font-family: Arial, sans-serif;
+                    margin: 40px;
+                    background: #f5f5f5;
+                }
+                h1 {
+                    color: #333;
+                }
+                button {
+                    padding: 12px 20px;
+                    font-size: 16px;
+                    background-color: #4CAF50;
+                    color: white;
+                    border: none;
+                    border-radius: 6px;
+                    cursor: pointer;
+                }
+                button:hover {
+                    background-color: #45a049;
+                }
+                #results {
+                    margin-top: 30px;
+                    padding: 20px;
+                    background: white;
+                    border-radius: 8px;
+                    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+                }
+                pre {
+                    white-space: pre-wrap;
+                    word-wrap: break-word;
+                }
+            </style>
+        </head>
+        <body>
+            <h1>PHA Guardian Diagnostics</h1>
+            <p>Click the button below to run diagnostics.</p>
 
-    # Check supervisor token availability
-    token_path = Path("/data/supervisor_token")
-    token_available = token_path.exists()
+            <button onclick="runDiagnostics()">Run Diagnostics</button>
 
-    return {
-        "status": "running",
-        "message": "PHA Guardian API is online",
-        "issues_json_found": issues_file_exists,
-        "issues_loaded": issues_count,
-        "supervisor_token_available": token_available,
-        "endpoints": {
-            "health": "/health",
-            "run_diagnostics": "/diagnostics/run"
-        }
-    }
+            <div id="results"></div>
+
+            <script>
+                async function runDiagnostics() {
+                    const resultsDiv = document.getElementById("results");
+                    resultsDiv.innerHTML = "<p><em>Running diagnostics...</em></p>";
+
+                    try {
+                        const resp = await fetch("./diagnostics/run");
+                        const data = await resp.json();
+
+                        resultsDiv.innerHTML = "<h2>Results</h2><pre>" +
+                            JSON.stringify(data, null, 2) +
+                            "</pre>";
+                    } catch (err) {
+                        resultsDiv.innerHTML = "<p style='color:red;'>Error running diagnostics.</p>";
+                    }
+                }
+            </script>
+        </body>
+    </html>
+    """
 
 
 @app.get("/diagnostics/run")
