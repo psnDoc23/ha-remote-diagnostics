@@ -141,6 +141,9 @@ def root():
 
 @app.get("/diagnostics/run")
 async def run_diagnostics():
+
+    print("Diagnostics endpoint hit")
+    
     logs = await fetch_supervisor_logs()
 
     results = []
