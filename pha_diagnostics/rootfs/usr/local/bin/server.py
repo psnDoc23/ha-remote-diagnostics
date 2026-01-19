@@ -24,9 +24,13 @@ async def fetch_supervisor_logs():
     """
     Fetch Home Assistant Core logs from Supervisor API.
     """
+   
 
     token_path = Path("/data/supervisor_token")
     token = token_path.read_text().strip() if token_path.exists() else None
+
+    print("Token exists:", token_path.exists())
+    print("Token value:", repr(token))
 
     headers = {"Content-Type": "application/json"}
 
