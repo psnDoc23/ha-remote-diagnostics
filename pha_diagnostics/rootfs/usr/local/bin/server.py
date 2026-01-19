@@ -23,16 +23,16 @@ else:
 async def fetch_supervisor_logs():
     """
     Fetch Home Assistant Core logs from Supervisor API.
-    The Supervisor injects the token into the container as an env var.
     """
 
     token_path = Path("/data/supervisor_token")
-    token = token_path.read_text().strip() if token_path.exists() else ""
+    token = token_path.read_text().strip() if token_path.exists() else None
 
-    headers = {
-        "Authorization": f"Bearer {token}",
-        "Content-Type": "application/json",
-    }
+    headers = {"Content-Type": "application/json"}
+
+    # Only include Authorization header if token exists and is non-empty
+    if token:
+        headers["Authorization"] = f"Bearer {token}"
 
     async with httpx.AsyncClient() as client:
         resp = await client.get("http://supervisor/logs", headers=headers)
