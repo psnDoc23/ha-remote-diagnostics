@@ -25,8 +25,12 @@ async def fetch_supervisor_logs():
     Fetch Home Assistant Core logs from Supervisor API.
     The Supervisor injects the token into the container as an env var.
     """
+
+    token_path = Path("/data/supervisor_token")
+    token = token_path.read_text().strip() if token_path.exists() else ""
+
     headers = {
-        "Authorization": f"Bearer {Path('/data/supervisor_token').read_text().strip()}",
+        "Authorization": f"Bearer {token}",
         "Content-Type": "application/json",
     }
 
@@ -143,7 +147,7 @@ def root():
 async def run_diagnostics():
 
     print("Diagnostics endpoint hit")
-    
+
     logs = await fetch_supervisor_logs()
 
     results = []
