@@ -1,5 +1,5 @@
 name: PHA Guardian Diagnostic API
-version: "0.1.14"
+version: "0.1.15"
 slug: pha_diagnostics
 description: "Test add-on detection"
 arch:
@@ -9,6 +9,8 @@ arch:
 
 startup: application
 boot: auto
+
+hassio_api: true
 homeassistant_api: true
 
 init: false
