@@ -1,5 +1,5 @@
 name: PHA Guardian Diagnostic API
-version: "0.1.13"
+version: "0.1.14"
 slug: pha_diagnostics
 description: "Test add-on detection"
 arch:
