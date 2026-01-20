@@ -9,6 +9,7 @@ arch:
 
 startup: application
 boot: auto
+homeassistant_api: true
 
 init: false
 legacy: false
