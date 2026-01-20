@@ -12,6 +12,7 @@ boot: auto
 
 hassio_api: true
 homeassistant_api: true
+protected: false
 
 init: false
 legacy: false
